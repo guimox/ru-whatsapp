@@ -1,135 +1,129 @@
-const { DisconnectReason } = require("@whiskeysockets/baileys");
-const useMongoDBAuthState = require("./mongoAuthState");
-const makeWASocket = require("@whiskeysockets/baileys").default;
-const { MongoClient } = require("mongodb");
-const { formatMeals } = require("./helpers");
-require("dotenv").config();
+const { DisconnectReason } = require('@whiskeysockets/baileys');
+const useMongoDBAuthState = require('./mongoAuthState');
+const makeWASocket = require('@whiskeysockets/baileys').default;
+const { MongoClient } = require('mongodb');
+const { formatMeals } = require('./helpers');
+require('dotenv').config();
 
-async function connectionLogic() {
-  const mongoClient = new MongoClient(process.env.MONGO_URL, {
-    useNewUrlParser: true,
+const connectionLogic = async (sock) => {
+  const maxRetries = 5;
+  let retries = 0;
 
-    useUnifiedTopology: true,
-  });
-
-  await mongoClient.connect();
-
-  const collection = mongoClient
-
-    .db("whatsapp-api")
-
-    .collection("auth-info-baileys");
-
-  const { state, saveCreds } = await useMongoDBAuthState(collection);
-
-  const sock = makeWASocket({
-    printQRInTerminal: true,
-
-    auth: state,
-  });
-
-  sock.ev.on("connection.update", async (update) => {
-    const { connection, lastDisconnect, qr } = update || {};
-
-    if (qr) {
-      console.log(qr);
+  while (retries < maxRetries) {
+    try {
+      console.log(`Trying to reconnect, attempt ${retries + 1}`);
+      await sock.connect();
+      console.log('Reconnected successfully');
+      return;
+    } catch (error) {
+      console.error('Reconnection attempt failed:', error);
+      retries++;
+      await new Promise((resolve) => setTimeout(resolve, 5000));
     }
+  }
 
-    if (connection === "close") {
-      const shouldReconnect =
-        lastDisconnect?.error?.output?.statusCode !==
-        DisconnectReason.loggedOut;
+  console.error('Max reconnection attempts reached. Exiting.');
+  process.exit();
+};
 
-      if (shouldReconnect) {
-        connectionLogic();
+exports.handler = async (event) => {
+  let mongoURL = process.env.MONGO_URL;
+  let contactNumber = process.env.NUMBER_NEWSLETTER.split(',');
+
+  console.log(event.responsePayload);
+
+  try {
+    console.log('Trying to connect to MongoDB');
+    const mongoClient = new MongoClient(mongoURL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    await mongoClient.connect();
+    console.log('Connected to MongoDB');
+
+    const collection = mongoClient
+      .db('whatsapp-api')
+      .collection('auth-info-baileys');
+    const { state, saveCreds } = await useMongoDBAuthState(collection);
+    const sock = makeWASocket({
+      printQRInTerminal: true,
+      auth: state,
+    });
+
+    sock.ev.on('connection.update', async (update) => {
+      const { connection, lastDisconnect, qr } = update || {};
+
+      if (qr) {
+        console.log('Showing QR code');
+        console.log(qr);
       }
+
+      if (connection === 'close') {
+        const shouldReconnect =
+          lastDisconnect?.error?.output?.statusCode !==
+          DisconnectReason.loggedOut;
+
+        if (shouldReconnect) {
+          await connectionLogic(sock);
+        } else {
+          process.exit();
+        }
+      }
+    });
+
+    await sock.waitForConnectionUpdate(
+      ({ connection }) => connection === 'open'
+    );
+
+    console.log('Connection opened');
+
+    sock.ev.on('creds.update', saveCreds);
+
+    const { menuId, sortId, date, meals, ruCode, served } =
+      event.responsePayload;
+
+    if (!menuId || !sortId || !date || !meals || !ruCode || !served) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          error: 'Invalid request. Required fields are missing.',
+        }),
+      };
     }
-  });
 
-  const objectToTest = {
-    date: "2024-07-31T13:05:48.359288493-03:00",
-    ruCode: "POL",
-    meals: {
-      lunch: [
-        {
-          name: "Frango ao sugo",
-          icons: ["Origem-animal-site"],
-        },
-        {
-          name: "Vegano: almôndega de grão-de-bico ao sugo",
-          icons: ["Simbolo-vegano-300x300", "Gluten-site"],
-        },
-        {
-          name: "Polenta cremosa",
-          icons: ["Simbolo-vegano-300x300"],
-        },
-        {
-          name: "Saladas de folhosa e pepino",
-          icons: ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"],
-        },
-        {
-          name: "Salada de frutas",
-          icons: ["Simbolo-vegano-300x300"],
-        },
-      ],
-      breakfast: [
-        {
-          name: "Pão de milho com queijo",
-          icons: ["Gluten-site", "Leite-e-derivados-site"],
-        },
-        {
-          name: "Maçã",
-          icons: ["Simbolo-vegano-300x300"],
-        },
-      ],
-      dinner: [
-        {
-          name: "Nhoque à bolonhesa",
-          icons: ["Origem-animal-site", "Gluten-site"],
-        },
-        {
-          name: "Vegano: nhoque de lentilha ao sugo",
-          icons: ["Simbolo-vegano-300x300", "Gluten-site"],
-        },
-        {
-          name: "Sopa de legumes com arroz",
-          icons: ["Simbolo-vegano-300x300"],
-        },
-        {
-          name: "Saladas de folhosas e abobrinha ralada",
-          icons: ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"],
-        },
-      ],
-    },
-    served: ["breakfast", "lunch", "dinner"],
-  };
+    console.log(event);
 
-  const message = formatMeals(objectToTest);
+    const message = formatMeals(event.responsePayload);
 
-  sock.ev.on("messages.update", (messageInfo) => {
-    console.log(messageInfo);
-  });
+    try {
+      const msg = await sock.sendMessage(contactNumber, { text: message });
+      if (msg.status !== 1) {
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ error: 'Internal server error.' }),
+        };
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: 'Internal server error.' }),
+      };
+    }
 
-  sock.ev.on("messages.upsert", (messageInfoUpsert) => {
-    console.log(messageInfoUpsert);
-  });
-
-  sock.ev.on("creds.update", saveCreds);
-
-  await sock.waitForConnectionUpdate(({ connection }) => connection === "open");
-
-  //   let result = await sock.newsletterCreate("Testing newsletter");
-  //   console.log("nn", result);
-
-  await sock.sendMessage(process.env.NUMBER_NEWSLETTER, { text: message });
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      success: true,
-      message: "Message sent successfully.",
-    }),
-  };
-}
-
-connectionLogic();
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        success: true,
+        message: 'Message sent successfully.',
+      }),
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error.' }),
+    };
+  }
+};
