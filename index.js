@@ -1,5 +1,5 @@
 const { DisconnectReason } = require('@whiskeysockets/baileys');
-const useMongoDBAuthState = require('./mongoAuthState');
+const useMongoDBAuthState = require('./mongo');
 const makeWASocket = require('@whiskeysockets/baileys').default;
 const { MongoClient } = require('mongodb');
 const { formatMeals } = require('./helpers');
@@ -14,7 +14,6 @@ const connectionLogic = async (sock) => {
       console.log(`Trying to reconnect, attempt ${retries + 1}`);
       await sock.connect();
       console.log('Reconnected successfully');
-      return;
     } catch (error) {
       console.error('Reconnection attempt failed:', error);
       retries++;
@@ -28,7 +27,7 @@ const connectionLogic = async (sock) => {
 
 exports.handler = async (event) => {
   let mongoURL = process.env.MONGO_URL;
-  let contactNumber = process.env.NUMBER_NEWSLETTER.split(',');
+  let contactNumber = process.env.NUMBER_NEWSLETTER;
 
   console.log(event.responsePayload);
 
@@ -45,7 +44,9 @@ exports.handler = async (event) => {
     const collection = mongoClient
       .db('whatsapp-api')
       .collection('auth-info-baileys');
+
     const { state, saveCreds } = await useMongoDBAuthState(collection);
+
     const sock = makeWASocket({
       printQRInTerminal: true,
       auth: state,
@@ -78,12 +79,13 @@ exports.handler = async (event) => {
 
     console.log('Connection opened');
 
-    sock.ev.on('creds.update', saveCreds);
+    console.log(event);
 
-    const { menuId, sortId, date, meals, ruCode, served } =
-      event.responsePayload;
+    // sock.ev.on('creds.update', saveCreds);
 
-    if (!menuId || !sortId || !date || !meals || !ruCode || !served) {
+    const { date, meals, ruCode, served } = event.responsePayload;
+
+    if (!date || !meals || !ruCode || !served) {
       return {
         statusCode: 400,
         body: JSON.stringify({

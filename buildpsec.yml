@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+
+  build:
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+      - echo "Zipping deployment package..."
+      - zip -r ru-menu-whatsapp.zip index.js mongo.js helpers.js node_modules
+
+  post_build:
+    commands:
+      - echo "Updating Lambda Function..."
+      - aws lambda update-function-code --function-name ru-menu-whatsapp --zip-file fileb://ru-menu-whatsapp.zip --region sa-east-1
+      - echo "Finished buildspec process"
+
+artifacts:
+  files: ru-menu-whatsapp.zip

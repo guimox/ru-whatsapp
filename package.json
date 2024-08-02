@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
+    "zip-package": "echo 'Zipping deployment package...' && zip -r ru-menu-whatsapp.zip index.js mongoAuthState.js helpers.js node_modules",
+    "build": "npm install && npm run zip-package",
     "format:check": "prettier --check .",
     "locally": "node -e \"console.log(require('./index').handler(require('./event.json')));\""
   },
