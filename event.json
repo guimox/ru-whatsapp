@@ -25,62 +25,12 @@
     "executedVersion": "$LATEST"
   },
   "responsePayload": {
-    "date": "2024-08-01T11:03:24.668117215-03:00",
+    "date": "2024-08-09T07:57:33.618120425-03:00",
     "ruName": "CENTRO POLITÉCNICO",
     "ruUrl": "https://pra.ufpr.br/ru/ru-centro-politecnico/",
     "ruCode": "POL",
-    "served": ["breakfast", "lunch", "dinner"],
-    "meals": {
-      "lunch": [
-        {
-          "name": "Frango ao sugo",
-          "icons": ["Origem-animal-site"]
-        },
-        {
-          "name": "Vegano: almôndega de grão-de-bico ao sugo",
-          "icons": ["Simbolo-vegano-300x300", "Gluten-site"]
-        },
-        {
-          "name": "Polenta cremosa",
-          "icons": ["Simbolo-vegano-300x300"]
-        },
-        {
-          "name": "Saladas de folhosa e pepino",
-          "icons": ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"]
-        },
-        {
-          "name": "Salada de frutas",
-          "icons": ["Simbolo-vegano-300x300"]
-        }
-      ],
-      "breakfast": [
-        {
-          "name": "Pão de milho com queijo",
-          "icons": ["Gluten-site", "Leite-e-derivados-site"]
-        },
-        {
-          "name": "Maçã",
-          "icons": ["Simbolo-vegano-300x300"]
-        }
-      ],
-      "dinner": [
-        {
-          "name": "Nhoque à bolonhesa",
-          "icons": ["Origem-animal-site", "Gluten-site"]
-        },
-        {
-          "name": "Vegano: nhoque de lentilha ao sugo",
-          "icons": ["Simbolo-vegano-300x300", "Gluten-site"]
-        },
-        {
-          "name": "Sopa de legumes com arroz",
-          "icons": ["Simbolo-vegano-300x300"]
-        },
-        {
-          "name": "Saladas de folhosas e abobrinha ralada",
-          "icons": ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"]
-        }
-      ]
-    }
+    "served": null,
+    "meals": null,
+    "imgMenu": "https://pra.ufpr.br/ru/files/2024/08/ESTU-DANTE-3-1024x1024.jpg"
   }
 }

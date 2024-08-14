@@ -32,14 +32,14 @@ exports.handler = async (event) => {
   console.log(event.responsePayload);
 
   try {
-    console.log('Trying to connect to MongoDB');
+    console.log('###### TRYING TO CONNECT TO MONGODB');
     const mongoClient = new MongoClient(mongoURL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
     await mongoClient.connect();
-    console.log('Connected to MongoDB');
+    console.log('###### CONNECTED TO MONGODB');
 
     const collection = mongoClient
       .db('whatsapp-api')
@@ -77,15 +77,11 @@ exports.handler = async (event) => {
       ({ connection }) => connection === 'open'
     );
 
-    console.log('Connection opened');
+    console.log('###### CONNECTION OPENED');
 
-    console.log(event);
+    const { date, imgMenu, ruCode } = event.responsePayload;
 
-    // sock.ev.on('creds.update', saveCreds);
-
-    const { date, meals, ruCode, served } = event.responsePayload;
-
-    if (!date || !meals || !ruCode || !served) {
+    if (!date || !ruCode) {
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -94,12 +90,20 @@ exports.handler = async (event) => {
       };
     }
 
-    console.log(event);
+    console.log('###### EVENT TRIGGERED ' + event);
 
-    const message = formatMeals(event.responsePayload);
+    const message = imgMenu ?? formatMeals(event.responsePayload);
 
     try {
-      const msg = await sock.sendMessage(contactNumber, { text: message });
+      const msg = await sock.sendMessage(
+        contactNumber,
+        imgMenu
+          ? {
+              image: { url: message },
+              caption: date,
+            }
+          : { text: message }
+      );
       if (msg.status !== 1) {
         return {
           statusCode: 500,
