@@ -1,5 +1,5 @@
 const { daysOfWeek } = require('./constants');
-const { insertDisclaimer, formatDate } = require('./format');
+const { insertDisclaimer, formatDate, translateTitle } = require('./format');
 
 const formatMeals = (jsonData) => {
   const dateFromJson = jsonData.date;
