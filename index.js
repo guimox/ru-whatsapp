@@ -5,31 +5,9 @@ const { formatMeals } = require('./util/util');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
-const connectionLogic = async (sock) => {
-  const maxRetries = 5;
-  let retries = 0;
-
-  while (retries < maxRetries) {
-    try {
-      console.log(`Trying to reconnect, attempt ${retries + 1}`);
-      await sock.connect();
-      console.log('Reconnected successfully');
-    } catch (error) {
-      console.error('Reconnection attempt failed:', error);
-      retries++;
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-    }
-  }
-
-  console.error('Max reconnection attempts reached. Exiting.');
-  process.exit();
-};
-
-exports.handler = async (event) => {
+const connectToWhatsApp = async () => {
   let mongoURL = process.env.MONGO_URL;
   let contactNumber = process.env.NUMBER_NEWSLETTER;
-
-  console.log(event.responsePayload);
 
   try {
     console.log('###### TRYING TO CONNECT TO MONGODB');
@@ -66,70 +44,53 @@ exports.handler = async (event) => {
           DisconnectReason.loggedOut;
 
         if (shouldReconnect) {
-          await connectionLogic(sock);
+          console.log('Reconnection attempt due to connection close...');
+          await connectToWhatsApp();
         } else {
-          process.exit();
+          process.exit(1);
         }
       }
     });
 
-    await sock.waitForConnectionUpdate(
-      ({ connection }) => connection === 'open'
-    );
+    sock.ev.on('creds.update', saveCreds);
 
     console.log('###### CONNECTION OPENED');
 
-    const { date, imgMenu, ruCode } = event.responsePayload;
+    sock.ev.on('messages.upsert', async (m) => {
+      console.log('Message received from:', m.messages[0].key.remoteJid);
 
-    if (!date || !ruCode) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          error: 'Invalid request. Required fields are missing.',
-        }),
-      };
-    }
+      const { date, imgMenu, ruCode } = m.messages[0];
 
-    console.log('###### EVENT TRIGGERED ' + event);
-
-    const message = imgMenu ?? formatMeals(event.responsePayload);
-
-    try {
-      const msg = await sock.sendMessage(
-        contactNumber,
-        imgMenu
-          ? {
-              image: { url: message },
-              caption: date,
-            }
-          : { text: message }
-      );
-      if (msg.status !== 1) {
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ error: 'Internal server error.' }),
-        };
+      if (!date || !ruCode) {
+        console.log('Invalid request. Required fields are missing.');
+        return;
       }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({ error: 'Internal server error.' }),
-      };
-    }
 
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: 'Message sent successfully.',
-      }),
-    };
+      const message = imgMenu ?? formatMeals(m.messages[0]);
+
+      try {
+        const msg = await sock.sendMessage(
+          contactNumber,
+          imgMenu
+            ? {
+                image: { url: message },
+                caption: date,
+              }
+            : { text: message }
+        );
+        if (msg.status !== 1) {
+          console.error('Failed to send message. Internal server error.');
+        } else {
+          console.log('Message sent successfully.');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+      }
+    });
   } catch (error) {
     console.error('Error:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Internal server error.' }),
-    };
+    process.exit(1);
   }
 };
+
+connectToWhatsApp();
