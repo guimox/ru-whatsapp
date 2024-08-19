@@ -9,7 +9,7 @@
     "zip-package": "echo 'Zipping deployment package...' && zip -r ru-menu-whatsapp.zip index.js ./db/mongo.js ./util/util.js ./util/format.js ./util/constants.js node_modules",
     "build": "npm install && npm run zip-package",
     "format:check": "prettier --check .",
-    "locally": "node -e \"console.log(require('./app').handler(require('./test/event.json')));\""
+    "locally": "node -e \"console.log(require('./index').handler(require('./test/event.json')));\""
   },
   "author": "Guilherme Lopes - @gxlpes",
   "license": "ISC",
