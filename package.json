@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
-    "zip-package": "echo 'Zipping deployment package...' && zip -r ru-menu-whatsapp.zip app.js ./db/mongo.js ./util/util.js ./util/format.js ./util/constants.js node_modules",
+    "zip-package": "echo 'Zipping deployment package...' && zip -r ru-menu-whatsapp.zip index.js ./db/mongo.js ./util/util.js ./util/format.js ./util/constants.js node_modules",
     "build": "npm install && npm run zip-package",
     "format:check": "prettier --check .",
     "locally": "node -e \"console.log(require('./app').handler(require('./test/event.json')));\""

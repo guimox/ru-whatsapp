@@ -1,8 +1,8 @@
 const { DisconnectReason } = require('@whiskeysockets/baileys');
-const useMongoDBAuthState = require('./db/mongo');
 const makeWASocket = require('@whiskeysockets/baileys').default;
-const { MongoClient } = require('mongodb');
+const useMongoDBAuthState = require('./db/mongo');
 const { formatMeals } = require('./util/util');
+const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const connectionLogic = async (sock) => {
