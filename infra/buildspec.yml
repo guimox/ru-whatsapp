@@ -10,7 +10,7 @@ phases:
       - echo "Installing dependencies..."
       - npm install
       - echo "Zipping deployment package..."
-      - zip -r ru-whatsapp.zip index.js mongo.js helpers.js node_modules
+      - zip -r ru-whatsapp.zip app.js mongo.js helpers.js node_modules
 
   post_build:
     commands:

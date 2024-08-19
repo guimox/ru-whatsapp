@@ -1,18 +1,17 @@
 {
   "name": "ru-whatsapp",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Sending message via WhatsApp using AWS Lambda",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
-    "zip-package": "echo 'Zipping deployment package...' && zip -r ru-menu-whatsapp.zip index.js mongoAuthState.js helpers.js node_modules",
+    "zip-package": "echo 'Zipping deployment package...' && zip -r ru-menu-whatsapp.zip app.js mongoAuthState.js helpers.js node_modules",
     "build": "npm install && npm run zip-package",
     "format:check": "prettier --check .",
-    "locally": "node -e \"console.log(require('./index').handler(require('./event.json')));\""
+    "locally": "node -e \"console.log(require('./app').handler(require('./test/event.json')));\""
   },
-  "keywords": [],
-  "author": "",
+  "author": "Guilherme Lopes - @gxlpes",
   "license": "ISC",
   "dependencies": {
     "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys#feature/newsletter",
