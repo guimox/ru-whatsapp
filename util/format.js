@@ -17,7 +17,7 @@ const formatDate = (date) => {
   });
 };
 
-const insertDisclaimer = (formattedOutput) => {
+const insertDisclaimer = (formattedOutput, link) => {
   formattedOutput += '🌱 - Indicado para veganos\n';
   formattedOutput += '🥩 - Contém produtos de origem animal\n';
   formattedOutput += '🌾 - Não indicado para celíacos por conter glúten\n';

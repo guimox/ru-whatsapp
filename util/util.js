@@ -26,7 +26,7 @@ const formatMeals = (jsonData) => {
     formattedOutput += '\n';
   }
 
-  let completeMessage = insertDisclaimer(formattedOutput);
+  let completeMessage = insertDisclaimer(formattedOutput, link);
 
   return completeMessage;
 };
