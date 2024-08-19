@@ -1,4 +1,4 @@
-const { daysOfWeek } = require('./constants');
+const { daysOfWeek, iconsMap } = require('./constants');
 const { insertDisclaimer, formatDate, translateTitle } = require('./format');
 
 const formatMeals = (jsonData) => {
