@@ -10,7 +10,7 @@ phases:
       - echo "Installing dependencies..."
       - npm install
       - echo "Zipping deployment package..."
-      - zip -r ru-menu-whatsapp.zip index.js ./db/mongo.js ./util/util.js ./util/format.js ./util/constants.js node_modules
+      - zip -r ru-whatsapp.zip index.js ./db/mongo.js ./util/util.js ./util/format.js ./util/constants.js node_modules
 
   post_build:
     commands:
@@ -19,4 +19,4 @@ phases:
       - echo "Finished buildspec process"
 
 artifacts:
-  files: ru-menu-whatsapp.zip
+  files: ru-whatsapp.zip
