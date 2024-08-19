@@ -8,8 +8,9 @@ phases:
   build:
     commands:
       - echo "Installing dependencies..."
-      - npm run build
+      - npm install
       - echo "Zipping deployment package..."
+      - zip -r ru-menu-whatsapp.zip index.js ./db/mongo.js ./util/util.js ./util/format.js ./util/constants.js node_modules
 
   post_build:
     commands:
