@@ -72,8 +72,6 @@ exports.handler = async (event) => {
       };
     }
 
-    console.log('###### EVENT TRIGGERED ' + event);
-
     const message = imgMenu ?? formatMeals(event.responsePayload);
 
     try {
