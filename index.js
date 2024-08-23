@@ -5,11 +5,7 @@ const { formatMeals } = require('./util/util');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
-exports.handler = async (event) => {
-  let mongoURL = process.env.MONGO_URL;
-  let contactNumber = process.env.NUMBER_NEWSLETTER;
-  console.log('###### EVENT ' + event.responsePayload);
-
+async function connectEverything(event, mongoURL, contactNumber) {
   try {
     console.log('###### TRYING TO CONNECT TO MONGODB');
     const mongoClient = new MongoClient(mongoURL, {
@@ -27,6 +23,7 @@ exports.handler = async (event) => {
     const { state, saveCreds } = await useMongoDBAuthState(collection);
 
     const sock = makeWASocket({
+      version: [2, 3000, 1015872296],
       printQRInTerminal: true,
       auth: state,
     });
@@ -46,7 +43,7 @@ exports.handler = async (event) => {
 
         if (shouldReconnect) {
           console.log('Reconnection attempt due to connection close...');
-          await connectToWhatsApp();
+          await connectEverything(event, mongoURL, contactNumber); // Reconnect with the same parameters
         } else {
           process.exit(1);
         }
@@ -112,4 +109,12 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: 'Internal server error.' }),
     };
   }
+}
+
+exports.handler = async (event) => {
+  let mongoURL = process.env.MONGO_URL;
+  let contactNumber = process.env.NUMBER_NEWSLETTER;
+  console.log('###### EVENT ' + JSON.stringify(event.responsePayload));
+
+  return await connectEverything(event, mongoURL, contactNumber);
 };
