@@ -43,7 +43,7 @@ async function connectEverything(event, mongoURL, contactNumber) {
 
         if (shouldReconnect) {
           console.log('Reconnection attempt due to connection close...');
-          await connectEverything(event, mongoURL, contactNumber); // Reconnect with the same parameters
+          await connectEverything(event, mongoURL, contactNumber);
         } else {
           process.exit(1);
         }

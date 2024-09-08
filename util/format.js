@@ -17,7 +17,7 @@ const formatDate = (date) => {
   });
 };
 
-const insertDisclaimer = (formattedOutput, link) => {
+const insertDisclaimer = (formattedOutput, link, channelUrl) => {
   formattedOutput += '🌱 - Indicado para veganos\n';
   formattedOutput += '🥩 - Contém produtos de origem animal\n';
   formattedOutput += '🌾 - Não indicado para celíacos por conter glúten\n';
@@ -27,7 +27,8 @@ const insertDisclaimer = (formattedOutput, link) => {
   formattedOutput += '⚠️ - Contém produto(s) alergênico(s)\n';
   formattedOutput += '🍯 - Contém mel\n';
   formattedOutput += '🌶️ - Contém pimenta\n';
-  formattedOutput += `\n_Cardápio retirado de forma automatizada do site oficial do restaurante universitário. Essa mensagem e esse canal não possuem relação com a universidade ou com o restaurante universitário._ \n\n${link}`;
+  formattedOutput += `\nCardápio retirado de forma automatizada do site oficial do restaurante universitário disponível no link ${link}. Essa mensagem e esse canal não possuem relação com a universidade ou com o restaurante universitário.\n`;
+  formattedOutput += `\nEssa mensagem foi enviada ao canal de WhatsApp disponível no link ${channelUrl}\n`;
   return formattedOutput;
 };
 

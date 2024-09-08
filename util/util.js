@@ -1,10 +1,12 @@
 const { daysOfWeek, iconsMap } = require('./constants');
 const { insertDisclaimer, formatDate, translateTitle } = require('./format');
+require('dotenv').config();
 
 const formatMeals = (jsonData) => {
   const dateFromJson = jsonData.date;
   const title = jsonData.ruName;
   const link = jsonData.ruUrl;
+  const channelUrl = process.env.CHANNEL_URL;
 
   const dayOfWeek = daysOfWeek[new Date(dateFromJson).getDay()];
 
@@ -26,7 +28,7 @@ const formatMeals = (jsonData) => {
     formattedOutput += '\n';
   }
 
-  let completeMessage = insertDisclaimer(formattedOutput, link);
+  let completeMessage = insertDisclaimer(formattedOutput, link, channelUrl);
 
   return completeMessage;
 };
