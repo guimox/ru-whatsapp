@@ -15,7 +15,8 @@ phases:
   post_build:
     commands:
       - echo "Updating Lambda Function..."
-      - aws lambda update-function-code --function-name ru-whatsapp --zip-file fileb://ru-whatsapp.zip --region sa-east-1
+      - aws lambda update-function-code --function-name ru-whatsapp-bot --zip-file fileb://ru-whatsapp.zip --region sa-east-1
+      - aws lambda update-function-code --function-name ru-whatsapp-pot --zip-file fileb://ru-whatsapp.zip --region sa-east-1
       - echo "Finished buildspec process"
 
 artifacts:
