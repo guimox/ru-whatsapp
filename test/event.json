@@ -25,6 +25,70 @@
     "executedVersion": "$LATEST"
   },
   "responsePayload": {
+    "date": "2024-09-08T17:42:41.842383584-03:00",
+    "imgMenu": null,
+    "ruName": "CENTRO POLITÉCNICO",
+    "ruUrl": "https://pra.ufpr.br/ru/ru-centro-politecnico/",
+    "ruCode": "POL",
+    "served": ["breakfast", "lunch", "dinner"],
+    "meals": {
+      "lunch": [
+        {
+          "name": "Carne moída ao sugo",
+          "icons": ["Origem-animal-site"]
+        },
+        {
+          "name": "Vegano: PTS ao sugo",
+          "icons": ["Simbolo-vegano-300x300", "Alergenicos-site"]
+        },
+        {
+          "name": "Macarrão ao molho alfredo",
+          "icons": [
+            "Gluten-site",
+            "Leite-e-derivados-site",
+            "Origem-animal-site"
+          ]
+        },
+        {
+          "name": "Saladas de folhosa e rabanete",
+          "icons": ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"]
+        },
+        {
+          "name": "Melancia",
+          "icons": ["Simbolo-vegano-300x300"]
+        }
+      ],
+      "breakfast": [
+        {
+          "name": "Pão hot-dog com patê de azeitona",
+          "icons": ["Gluten-site", "Leite-e-derivados-site"]
+        },
+        {
+          "name": "Laranja",
+          "icons": ["Simbolo-vegano-300x300"]
+        }
+      ],
+      "dinner": [
+        {
+          "name": "Frango assado com ervas",
+          "icons": ["Origem-animal-site"]
+        },
+        {
+          "name": "Vegano: grão-de-bico com couve-flor refogados",
+          "icons": ["Simbolo-vegano-300x300", "Simbolo-pimenta-300x300"]
+        },
+        {
+          "name": "Sopa Caldo de cenoura",
+          "icons": ["Simbolo-vegano-300x300"]
+        },
+        {
+          "name": "Saladas de folhosa e chuchu ao vinagrete",
+          "icons": ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"]
+        }
+      ]
+    }
+  },
+  "responsePayload2": {
     "date": "2024-08-09T07:57:33.618120425-03:00",
     "ruName": "CENTRO POLITÉCNICO",
     "ruUrl": "https://pra.ufpr.br/ru/ru-centro-politecnico/",
