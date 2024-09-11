@@ -27,8 +27,9 @@ const insertDisclaimer = (formattedOutput, link, channelUrl) => {
   formattedOutput += '⚠️ - Contém produto(s) alergênico(s)\n';
   formattedOutput += '🍯 - Contém mel\n';
   formattedOutput += '🌶️ - Contém pimenta\n';
-  formattedOutput += `\nCardápio retirado de forma automatizada do site oficial do restaurante universitário disponível no link ${link}. Essa mensagem e esse canal não possuem relação com a universidade ou com o restaurante universitário.\n`;
-  formattedOutput += `\nEssa mensagem foi enviada ao canal de WhatsApp disponível no link ${channelUrl}\n`;
+  formattedOutput += `\nCardápio retirado de forma automatizada do site oficial do restaurante universitário disponível no link ${link}.\n`;
+  formattedOutput += `\nEssa mensagem foi enviada ao canal de WhatsApp disponível no link ${channelUrl}.\n`;
+  formattedOutput += `\nEssa mensagem e esse canal não possuem relação com a universidade ou com o restaurante universitário.`;
   return formattedOutput;
 };
 
