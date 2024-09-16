@@ -4,6 +4,7 @@ const iconsMap = {
   'Gluten-site': '🌾',
   'Leite-e-derivados-site': '🥛',
   'Ovo-site': '🍳',
+  'Alergenicos-site': '⚠️',
   'Simbolo-pimenta-300x300': '🌶️',
 };
 
