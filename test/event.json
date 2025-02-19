@@ -25,7 +25,7 @@
     "executedVersion": "$LATEST"
   },
   "responsePayload": {
-    "date": "2024-09-08T17:42:41.842383584-03:00",
+    "date": "2025-02-19T06:11:21.809628969-03:00",
     "imgMenu": null,
     "ruName": "CENTRO POLITÉCNICO",
     "ruUrl": "https://pra.ufpr.br/ru/ru-centro-politecnico/",
@@ -34,56 +34,64 @@
     "meals": {
       "lunch": [
         {
-          "name": "Carne moída ao sugo",
-          "icons": ["Origem-animal-site"]
+          "name": "Filé de frango à canadense",
+          "icons": ["carne", "gluten", "lactose"]
         },
         {
-          "name": "Vegano: PTS ao sugo",
-          "icons": ["Simbolo-vegano-300x300", "Alergenicos-site"]
+          "name": "Opção vegana: Lentilha com cebola crocante",
+          "icons": ["vegan", "gluten"]
         },
         {
-          "name": "Macarrão ao molho alfredo",
-          "icons": [
-            "Gluten-site",
-            "Leite-e-derivados-site",
-            "Origem-animal-site"
-          ]
+          "name": "Abóbora refogada",
+          "icons": ["vegan"]
         },
         {
-          "name": "Saladas de folhosa e rabanete",
-          "icons": ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"]
+          "name": "Saladas de folhosa e tomate",
+          "icons": ["vegan", "vegan"]
+        },
+        {
+          "name": "(molho para salada: vinagrete )",
+          "icons": ["vegan"]
         },
         {
           "name": "Melancia",
-          "icons": ["Simbolo-vegano-300x300"]
+          "icons": ["vegan"]
         }
       ],
       "breakfast": [
         {
-          "name": "Pão hot-dog com patê de azeitona",
-          "icons": ["Gluten-site", "Leite-e-derivados-site"]
+          "name": "Pão hot-dog com patê de presunto",
+          "icons": ["gluten", "476bf979-2cbb-476b-8739-02ed26485235", "lactose"]
         },
         {
-          "name": "Laranja",
-          "icons": ["Simbolo-vegano-300x300"]
+          "name": "2ª Opção: Pão hot-dog com pasta de grão-de-bico com beterraba",
+          "icons": ["gluten", "vegan"]
+        },
+        {
+          "name": "Melão",
+          "icons": ["vegan"]
         }
       ],
       "dinner": [
         {
-          "name": "Frango assado com ervas",
-          "icons": ["Origem-animal-site"]
+          "name": "Quibe de forma",
+          "icons": ["gluten", "carne", "ovo"]
         },
         {
-          "name": "Vegano: grão-de-bico com couve-flor refogados",
-          "icons": ["Simbolo-vegano-300x300", "Simbolo-pimenta-300x300"]
+          "name": "Opção vegana: Quibe de PTS",
+          "icons": ["gluten", "vegan", "daf04cd5-bacd-4ea4-91ce-48ea45cb0ac4"]
         },
         {
-          "name": "Sopa Caldo de cenoura",
-          "icons": ["Simbolo-vegano-300x300"]
+          "name": "Sopa creme de ervilha seca",
+          "icons": ["vegan"]
         },
         {
-          "name": "Saladas de folhosa e chuchu ao vinagrete",
-          "icons": ["Simbolo-vegano-300x300", "Simbolo-vegano-300x300"]
+          "name": "Saladas de folhosa e berinjela com orégano",
+          "icons": ["vegan", "vegan"]
+        },
+        {
+          "name": "(molho para salada: molho rosê )",
+          "icons": ["lactose"]
         }
       ]
     }
