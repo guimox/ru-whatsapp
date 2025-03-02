@@ -5,62 +5,77 @@ const { formatMeals } = require('./util/util');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
+let mongoClient;
+let sock;
+
 async function connectEverything(event, mongoURL, contactNumber) {
   try {
-    console.log('###### TRYING TO CONNECT TO MONGODB');
-    const mongoClient = new MongoClient(mongoURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    await mongoClient.connect();
-    console.log('###### CONNECTED TO MONGODB');
+    if (!mongoClient) {
+      console.log('###### CONNECTING TO MONGODB');
+      mongoClient = new MongoClient(mongoURL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      await mongoClient.connect();
+      console.log('###### CONNECTED TO MONGODB');
+    }
 
     const collection = mongoClient
       .db('whatsapp-api')
       .collection('auth-info-baileys');
 
+    console.log('###### FETCHING AUTH STATE FROM MONGODB');
     const { state, saveCreds } = await useMongoDBAuthState(collection);
+    console.log('###### AUTH STATE FETCHED');
 
-    const sock = makeWASocket({
-      version: [2, 3000, 1015872296],
-      printQRInTerminal: true,
-      auth: state,
-    });
+    if (!sock) {
+      console.log('###### CREATING WHATSAPP SOCKET');
+      sock = makeWASocket({
+        version: [2, 3000, 1015872296],
+        printQRInTerminal: true,
+        auth: state,
+      });
 
-    sock.ev.on('connection.update', async (update) => {
-      const { connection, lastDisconnect, qr } = update || {};
+      sock.ev.on('connection.update', async (update) => {
+        const { connection, lastDisconnect, qr } = update || {};
 
-      if (qr) {
-        console.log('Showing QR code');
-        console.log(qr);
-      }
-
-      if (connection === 'close') {
-        const shouldReconnect =
-          lastDisconnect?.error?.output?.statusCode !==
-          DisconnectReason.loggedOut;
-
-        if (shouldReconnect) {
-          console.log('Reconnection attempt due to connection close...');
-          await connectEverything(event, mongoURL, contactNumber);
-        } else {
-          process.exit(1);
+        if (qr) {
+          console.log('##### SHOWING QR CODE');
+          console.log(qr);
         }
-      }
-    });
 
-    sock.ev.on('creds.update', saveCreds);
+        if (connection === 'close') {
+          console.log('##### CONNECTION CLOSED');
+          const shouldReconnect =
+            lastDisconnect?.error?.output?.statusCode !==
+            DisconnectReason.loggedOut;
 
+          if (shouldReconnect) {
+            console.log(
+              '##### RECONNECTION ATTEMPT DUE TO CONNECTION CLOSE...'
+            );
+            await connectEverything(event, mongoURL, contactNumber);
+          } else {
+            console.log('##### LOGGED OUT, EXITING...');
+            process.exit(1);
+          }
+        }
+      });
+
+      sock.ev.on('creds.update', saveCreds);
+      console.log('##### WHATSAPP SOCKET CREATED AND EVENT LISTENERS ADDED');
+    }
+
+    console.log('##### WAITING FOR WHATSAPP CONNECTION TO OPEN...');
     await sock.waitForConnectionUpdate(
       ({ connection }) => connection === 'open'
     );
-
     console.log('###### CONNECTION OPENED');
 
     const { date, imgMenu, ruCode } = event.responsePayload;
 
     if (!date || !ruCode) {
+      console.log('##### MISSING REQUIRED FIELDS: DATE OR RUCODE');
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -69,9 +84,12 @@ async function connectEverything(event, mongoURL, contactNumber) {
       };
     }
 
+    console.log('##### FORMATTING MESSAGE...');
     const message = imgMenu ?? formatMeals(event.responsePayload);
+    console.log('##### MESSAGE FORMATTED:', message);
 
     try {
+      console.log('##### SENDING MESSAGE...');
       const msg = await sock.sendMessage(
         contactNumber,
         imgMenu
@@ -81,20 +99,24 @@ async function connectEverything(event, mongoURL, contactNumber) {
             }
           : { text: message }
       );
+      console.log('##### MESSAGE SENT:', msg);
+
       if (msg.status !== 1) {
+        console.log('##### MESSAGE SENDING FAILED:', msg);
         return {
           statusCode: 500,
           body: JSON.stringify({ error: 'Internal server error.' }),
         };
       }
     } catch (error) {
-      console.error('Error sending message:', error);
+      console.error('##### ERROR SENDING MESSAGE:', error);
       return {
         statusCode: 500,
         body: JSON.stringify({ error: 'Internal server error.' }),
       };
     }
 
+    console.log('##### MESSAGE SENT SUCCESSFULLY');
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -103,7 +125,7 @@ async function connectEverything(event, mongoURL, contactNumber) {
       }),
     };
   } catch (error) {
-    console.error('Error:', error);
+    console.error('##### ERROR IN CONNECTEVERYTHING:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Internal server error.' }),
@@ -114,7 +136,7 @@ async function connectEverything(event, mongoURL, contactNumber) {
 exports.handler = async (event) => {
   let mongoURL = process.env.MONGO_URL;
   let contactNumber = process.env.NUMBER_NEWSLETTER;
-  console.log('###### EVENT ' + JSON.stringify(event.responsePayload));
+  console.log('###### EVENT RECEIVED:', JSON.stringify(event.responsePayload));
 
   return await connectEverything(event, mongoURL, contactNumber);
 };
