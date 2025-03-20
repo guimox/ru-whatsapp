@@ -24,7 +24,7 @@
     "statusCode": 200,
     "executedVersion": "$LATEST"
   },
-  "responsePayload": {
+  "responsePayload2": {
     "date": "2025-02-19T06:11:21.809628969-03:00",
     "imgMenu": null,
     "ruName": "CENTRO POLITÉCNICO",
@@ -96,7 +96,7 @@
       ]
     }
   },
-  "responsePayload2": {
+  "responsePayload": {
     "date": "2024-08-09T07:57:33.618120425-03:00",
     "ruName": "CENTRO POLITÉCNICO",
     "ruUrl": "https://pra.ufpr.br/ru/ru-centro-politecnico/",

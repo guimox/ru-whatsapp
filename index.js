@@ -8,7 +8,7 @@ require('dotenv').config();
 let mongoClient;
 let sock;
 
-async function connectEverything(event, mongoURL, contactNumber) {
+async function startProcessToSendMessage(event, mongoURL, contactNumber) {
   try {
     if (!mongoClient) {
       console.log('###### CONNECTING TO MONGODB');
@@ -99,6 +99,7 @@ async function connectEverything(event, mongoURL, contactNumber) {
             }
           : { text: message }
       );
+
       console.log('##### MESSAGE SENT:', msg);
 
       if (msg.status !== 1) {
@@ -125,7 +126,7 @@ async function connectEverything(event, mongoURL, contactNumber) {
       }),
     };
   } catch (error) {
-    console.error('##### ERROR IN CONNECTEVERYTHING:', error);
+    console.error('##### ERROR IN THE FUNCTION:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Internal server error.' }),
@@ -138,5 +139,5 @@ exports.handler = async (event) => {
   let contactNumber = process.env.NUMBER_NEWSLETTER;
   console.log('###### EVENT RECEIVED:', JSON.stringify(event.responsePayload));
 
-  return await connectEverything(event, mongoURL, contactNumber);
+  return await startProcessToSendMessage(event, mongoURL, contactNumber);
 };
