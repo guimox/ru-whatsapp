@@ -1,7 +1,7 @@
-const { DisconnectReason } = require('@whiskeysockets/baileys');
-const makeWASocket = require('@whiskeysockets/baileys').default;
+const { DisconnectReason } = require('baileys');
+const makeWASocket = require('baileys').default;
 const useMongoDBAuthState = require('./db/mongo');
-const { formatMeals } = require('./util/util');
+const { formatMeals, formatImageMenu } = require('./util/util');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
@@ -95,7 +95,7 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
         imgMenu
           ? {
               image: { url: message },
-              caption: date,
+              caption: formatImageMenu(event.responsePayload),
             }
           : { text: message }
       );
