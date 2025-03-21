@@ -1,12 +1,7 @@
-const { proto } = require("@whiskeysockets/baileys/WAProto");
-const {
-  Curve,
-  signedKeyPair,
-} = require("@whiskeysockets/baileys/lib/Utils/crypto");
-const {
-  generateRegistrationId,
-} = require("@whiskeysockets/baileys/lib/Utils/generics");
-const { randomBytes } = require("crypto");
+const { proto } = require('baileys/WAProto');
+const { Curve, signedKeyPair } = require('baileys/lib/Utils/crypto');
+const { generateRegistrationId } = require('baileys/lib/Utils/generics');
+const { randomBytes } = require('crypto');
 
 const initAuthCreds = () => {
   const identityKey = Curve.generateKeyPair();
@@ -15,7 +10,7 @@ const initAuthCreds = () => {
     signedIdentityKey: identityKey,
     signedPreKey: signedKeyPair(identityKey, 1),
     registrationId: generateRegistrationId(),
-    advSecretKey: randomBytes(32).toString("base64"),
+    advSecretKey: randomBytes(32).toString('base64'),
     processedHistoryMessages: [],
     nextPreKeyId: 1,
     firstUnuploadedPreKeyId: 1,
@@ -30,11 +25,11 @@ const BufferJSON = {
     if (
       Buffer.isBuffer(value) ||
       value instanceof Uint8Array ||
-      value?.type === "Buffer"
+      value?.type === 'Buffer'
     ) {
       return {
-        type: "Buffer",
-        data: Buffer.from(value?.data || value).toString("base64"),
+        type: 'Buffer',
+        data: Buffer.from(value?.data || value).toString('base64'),
       };
     }
 
@@ -43,13 +38,13 @@ const BufferJSON = {
 
   reviver: (_, value) => {
     if (
-      typeof value === "object" &&
+      typeof value === 'object' &&
       !!value &&
-      (value.buffer === true || value.type === "Buffer")
+      (value.buffer === true || value.type === 'Buffer')
     ) {
       const val = value.data || value.value;
-      return typeof val === "string"
-        ? Buffer.from(val, "base64")
+      return typeof val === 'string'
+        ? Buffer.from(val, 'base64')
         : Buffer.from(val || []);
     }
 
@@ -82,7 +77,7 @@ module.exports = useMongoDBAuthState = async (collection) => {
       await collection.deleteOne({ _id: id });
     } catch (_a) {}
   };
-  const creds = (await readData("creds")) || (0, initAuthCreds)();
+  const creds = (await readData('creds')) || (0, initAuthCreds)();
   return {
     state: {
       creds,
@@ -92,7 +87,7 @@ module.exports = useMongoDBAuthState = async (collection) => {
           await Promise.all(
             ids.map(async (id) => {
               let value = await readData(`${type}-${id}`);
-              if (type === "app-state-sync-key") {
+              if (type === 'app-state-sync-key') {
                 value = proto.Message.AppStateSyncKeyData.fromObject(data);
               }
               data[id] = value;
@@ -114,7 +109,7 @@ module.exports = useMongoDBAuthState = async (collection) => {
       },
     },
     saveCreds: () => {
-      return writeData(creds, "creds");
+      return writeData(creds, 'creds');
     },
   };
 };
