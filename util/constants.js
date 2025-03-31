@@ -14,6 +14,8 @@ const iconsMap = {
   '476bf979-2cbb-476b-8739-02ed26485235': '🐷',
   'daf04cd5-bacd-4ea4-91ce-48ea45cb0ac4': '⚠️',
   'Indicado para veganos': '🌱',
+  'Contém pimenta': '🌶️',
+  'Contém ingrediente(s) potencialmente alergênico(s)': '⚠️',
   'Contêm produtos de origem animal': '🥩',
   'Contém glúten': '🌾',
   'Contém leite e/ou derivados': '🥛',
