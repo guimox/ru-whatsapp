@@ -21,9 +21,10 @@ const insertDisclaimer = (formattedOutput, link, channelUrl) => {
   formattedOutput += '🌱 - Indicado para veganos\n';
   formattedOutput += '🥩 - Contém produtos de origem animal\n';
   formattedOutput += '🐷 - Contém produtos de origem suína\n';
-  formattedOutput += '🥛 - Contém leite e/ou derivados\n';
+  formattedOutput += '🌾 - Não indicado para celíacos por conter glúten\n';
+  formattedOutput +=
+    '🥛 - Não indicado para intolerantes à lactose por conter lactose\n';
   formattedOutput += '🍳 - Contêm ovos\n';
-  formattedOutput += '🌾 - Contém glúten\n';
   formattedOutput += '⚠️ - Contém produto(s) alergênico(s)\n';
   formattedOutput += '🍯 - Contém mel\n';
   formattedOutput += '🌶️ - Contém pimenta\n';
