@@ -1,5 +1,5 @@
-const { DisconnectReason } = require('@whiskeysockets/baileys');
-const makeWASocket = require('@whiskeysockets/baileys').default;
+const { DisconnectReason, fetchLatestBaileysVersion } = require('baileys');
+const makeWASocket = require('baileys').default;
 const useMongoDBAuthState = require('./db/mongo');
 const { formatMeals, formatImageMenu } = require('./util/util');
 const { MongoClient } = require('mongodb');
@@ -26,12 +26,14 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
 
     console.log('###### FETCHING AUTH STATE FROM MONGODB');
     const { state, saveCreds } = await useMongoDBAuthState(collection);
+    const { version } = await fetchLatestBaileysVersion();
+
     console.log('###### AUTH STATE FETCHED');
 
     if (!sock) {
       console.log('###### CREATING WHATSAPP SOCKET');
       sock = makeWASocket({
-        version: [2, 3000, 1015872296],
+        version,
         printQRInTerminal: true,
         auth: state,
       });

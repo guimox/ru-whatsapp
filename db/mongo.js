@@ -1,11 +1,6 @@
-const { proto } = require('@whiskeysockets/baileys/WAProto');
-const {
-  Curve,
-  signedKeyPair,
-} = require('@whiskeysockets/baileys/lib/Utils/crypto');
-const {
-  generateRegistrationId,
-} = require('@whiskeysockets/baileys/lib/Utils/generics');
+const { proto } = require('baileys/WAProto');
+const { Curve, signedKeyPair } = require('baileys/lib/Utils/crypto');
+const { generateRegistrationId } = require('baileys/lib/Utils/generics');
 const { randomBytes } = require('crypto');
 
 const initAuthCreds = () => {
