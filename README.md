@@ -1,4 +1,4 @@
-# RU WhatsApp Bot
+# RU WhatsApp
 
 Send automated WhatsApp messages containing UFPR's University Restaurant (RU) menu using AWS Lambda and Baileys.
 
