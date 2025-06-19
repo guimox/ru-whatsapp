@@ -72,15 +72,17 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     }
 
     console.log('##### WAITING FOR WHATSAPP CONNECTION TO OPEN...');
+
     await sock.waitForConnectionUpdate(
       ({ connection }) => connection === 'open'
     );
+
     console.log('###### CONNECTION OPENED');
 
-    const { date, imgMenu, ruCode } = event.responsePayload;
+    const { imgMenu, ruCode } = event.responsePayload;
 
-    if (!date || !ruCode) {
-      console.log('##### MISSING REQUIRED FIELDS: DATE OR RUCODE');
+    if (!ruCode) {
+      console.log('##### MISSING REQUIRED FIELDS: RUCODE');
       return {
         statusCode: 400,
         body: JSON.stringify({
@@ -90,7 +92,9 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     }
 
     console.log('##### FORMATTING MESSAGE...');
+
     const message = imgMenu ?? formatMeals(event.responsePayload);
+
     console.log('##### MESSAGE FORMATTED:', message);
 
     try {
