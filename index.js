@@ -30,7 +30,6 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     console.log('###### FETCHING AUTH STATE FROM MONGODB');
     const { state, saveCreds } = await useMongoDBAuthState(collection);
     const { version } = await fetchLatestBaileysVersion();
-
     console.log('###### AUTH STATE FETCHED');
 
     if (!sock) {
@@ -72,11 +71,9 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     }
 
     console.log('##### WAITING FOR WHATSAPP CONNECTION TO OPEN...');
-
     await sock.waitForConnectionUpdate(
       ({ connection }) => connection === 'open'
     );
-
     console.log('###### CONNECTION OPENED');
 
     const { imgMenu, ruCode } = event.responsePayload;
@@ -86,15 +83,13 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          error: 'Invalid request. Required fields are missing.',
+          error: 'Invalid request. RuCode is required.',
         }),
       };
     }
 
     console.log('##### FORMATTING MESSAGE...');
-
     const message = imgMenu ?? formatMeals(event.responsePayload);
-
     console.log('##### MESSAGE FORMATTED:', message);
 
     try {
@@ -108,7 +103,6 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
             }
           : { text: message }
       );
-
       console.log('##### MESSAGE SENT:', msg);
 
       if (msg.status !== 1) {
@@ -144,9 +138,8 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
 }
 
 exports.handler = async (event) => {
-  let mongoURL = process.env.MONGO_URL;
-  let contactNumber = process.env.NUMBER_NEWSLETTER;
+  const mongoURL = process.env.MONGO_URL;
+  const contactNumber = process.env.NUMBER_NEWSLETTER;
   console.log('###### EVENT RECEIVED:', JSON.stringify(event.responsePayload));
-
   return await startProcessToSendMessage(event, mongoURL, contactNumber);
 };
