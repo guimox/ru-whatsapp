@@ -37,4 +37,4 @@ ru-whatsapp/
 
 ## Related Projects
 
-- [RU Menu](https://github.com/guimox/ru-menu) - Frontend application
+- [RU Menu](https://github.com/guimox/ru-menu) - Main project repository
