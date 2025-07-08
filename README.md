@@ -4,9 +4,8 @@ Send automated WhatsApp messages containing UFPR's University Restaurant (RU) me
 
 ## Overview
 
-This project is part of the RU Menu ecosystem, which includes:
+This project is part of the [RU Menu](https://github.com/guimox/ru-menu) ecosystem, which includes:
 
-- [RU Menu](https://github.com/guimox/ru-menu) - Frontend application
 - [RU Scraper](https://github.com/guimox/ru-scraper) - Menu data scraper
 - RU WhatsApp (this project) - WhatsApp message sender
 
