@@ -76,6 +76,8 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     );
     console.log('###### CONNECTION OPENED');
 
+    console.log('###### RESPONSE', event.responsePayload);
+
     const { imgMenu, ruCode } = event.responsePayload;
 
     if (!ruCode) {
