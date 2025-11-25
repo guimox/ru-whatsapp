@@ -58,9 +58,12 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
             console.log(
               '##### RECONNECTION ATTEMPT DUE TO CONNECTION CLOSE...'
             );
-            await connectEverything(event, mongoURL, contactNumber);
+            // FIXED: Changed from connectEverything to startProcessToSendMessage
+            sock = null; // Reset socket to force recreation
+            await startProcessToSendMessage(event, mongoURL, contactNumber);
           } else {
             console.log('##### LOGGED OUT, EXITING...');
+            sock = null;
             process.exit(1);
           }
         }
@@ -71,9 +74,17 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     }
 
     console.log('##### WAITING FOR WHATSAPP CONNECTION TO OPEN...');
-    await sock.waitForConnectionUpdate(
+
+    // Add timeout to prevent hanging
+    const connectionTimeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Connection timeout')), 30000)
+    );
+
+    const connectionPromise = sock.waitForConnectionUpdate(
       ({ connection }) => connection === 'open'
     );
+
+    await Promise.race([connectionPromise, connectionTimeout]);
     console.log('###### CONNECTION OPENED');
 
     console.log('###### RESPONSE', event.responsePayload);
@@ -132,9 +143,18 @@ async function startProcessToSendMessage(event, mongoURL, contactNumber) {
     };
   } catch (error) {
     console.error('##### ERROR IN THE FUNCTION:', error);
+
+    // Clean up on error
+    if (sock) {
+      sock = null;
+    }
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal server error.' }),
+      body: JSON.stringify({
+        error: 'Internal server error.',
+        details: error.message,
+      }),
     };
   }
 }
